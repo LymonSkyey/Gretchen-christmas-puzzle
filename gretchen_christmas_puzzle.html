@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merry Christmas Gretchen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <style>
+    :root {
+      --bg: #0a1020;
+      --accent: #e63946;
+      --accent2: #ffd166;
+      --text: #f8f9fa;
+      --green: #2a9d8f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #2b5876 0, #0b1b3b 40%, #020617 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      touch-action: pan-y;
+    }
+    #app {
+      width: 100%;
+      max-width: 1000px;
+      min-height: 620px;
+      background: rgba(6, 10, 25, 0.95);
+      border-radius: 18px;
+      box-shadow: 0 24px 90px rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .hidden { display: none !important; }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .top-bar-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .app-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      text-shadow: 0 0 8px rgba(255, 209, 102, 0.7);
+    }
+    .app-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: all 0.18s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #ff6b6b 50%, var(--accent2) 100%);
+      color: #1b1b1b;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .sound-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .sound-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+    }
+    .sound-indicator.on {
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+    }
+
+    .main-area {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      height: calc(100% - 42px);
+    }
+
+    /* Panels */
+    .panel {
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.22), rgba(15, 23, 42, 0.96));
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(248, 250, 252, 0.12), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(248, 250, 252, 0.09), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+    .panel-subtitle {
+      font-size: 0.78rem;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    /* Landing */
+    #landingScreen {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 42%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      text-align: center;
+      z-index: 10;
+    }
+    .landing-card {
+      max-width: 700px;
+      padding: 28px 24px 24px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(17, 24, 39, 1));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+    .landing-card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(248, 250, 252, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(248, 250, 252, 0.18), transparent 50%),
+        radial-gradient(circle at 50% 130%, rgba(248, 250, 252, 0.08), transparent 60%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .landing-greeting {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: #fef3c7;
+      text-shadow: 0 0 18px rgba(252, 211, 77, 0.8);
+      letter-spacing: 0.06em;
+    }
+    .landing-sub {
+      font-size: 0.9rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #fca5a5;
+      margin-bottom: 14px;
+    }
+    .landing-message {
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+      color: #e5e7eb;
+    }
+    .landing-message strong {
+      color: #fbbf24;
+    }
+    .landing-footer-note {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+    .landing-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    /* Instructions */
+    #instructionsModal {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9;
+    }
+    .instructions-card {
+      width: min(520px, 90%);
+      max-height: 90vh;
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.24), rgba(15, 23, 42, 0.98));
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 18px 20px 16px;
+      overflow-y: auto;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+    .instructions-title {
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .instructions-subtitle {
+      font-size: 0.78rem;
+      text-align: center;
+      margin-bottom: 14px;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .instructions-list {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-left: 1.1em;
+      margin-bottom: 14px;
+    }
+    .instructions-list li {
+      margin-bottom: 4px;
+    }
+    .instructions-note {
+      font-size: 0.82rem;
+      opacity: 0.8;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .instructions-close {
+      display: flex;
+      justify-content: center;
+      margin-top: 4px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Puzzle area */
+    #puzzleCanvas {
+      width: 100%;
+      min-height: 500px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, #1f2937, #020617 60%, #000 100%);
+      position: relative;
+      overflow: visible;
+      touch-action: none;
+    }
+
+    .puzzle-board {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 16px;
+      height: 300px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, #1e293b, #020617 60%);
+      border: 2px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+    }
+
+    .puzzle-grid {
+      position: absolute;
+      inset: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .puzzle-slot {
+      border-radius: 8px;
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.24), rgba(15, 23, 42, 0.96));
+      box-shadow: inset 0 0 8px rgba(15, 23, 42, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+    .puzzle-slot::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 6px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      opacity: 0.5;
+    }
+
+    .puzzle-piece {
+      position: absolute;
+      width: 80px;
+      height: 70px;
+      border-radius: 12px;
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.7);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #f9fafb;
+      border: 2px solid rgba(15, 23, 42, 0.9);
+      transition: box-shadow 0.15s ease;
+      z-index: 10;
+    }
+    .puzzle-piece.dragging {
+      cursor: grabbing;
+      transform: scale(1.05);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.9);
+      z-index: 100;
+    }
+    .piece-content {
+      text-align: center;
+      padding: 4px;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+    .piece-emoji {
+      font-size: 1.3rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .piece-0 { background: linear-gradient(135deg, #1f2937, #0f172a); }
+    .piece-1 { background: linear-gradient(135deg, #b91c1c, #fecaca); }
+    .piece-2 { background: linear-gradient(135deg, #065f46, #a7f3d0); }
+    .piece-3 { background: linear-gradient(135deg, #7c2d12, #fed7aa); }
+    .piece-4 { background: linear-gradient(135deg, #1d4ed8, #bfdbfe); }
+    .piece-5 { background: linear-gradient(135deg, #4b5563, #e5e7eb); }
+    .piece-6 { background: linear-gradient(135deg, #6d28d9, #ddd6fe); }
+    .piece-7 { background: linear-gradient(135deg, #047857, #6ee7b7); }
+    .piece-8 { background: linear-gradient(135deg, #be123c, #fecaca); }
+    .piece-9 { background: linear-gradient(135deg, #92400e, #fbbf24); }
+    .piece-10 { background: linear-gradient(135deg, #0f766e, #99f6e4); }
+    .piece-11 { background: linear-gradient(135deg, #0369a1, #bae6fd); }
+
+    .piece-correct {
+      box-shadow: 0 0 0 3px rgba(190, 242, 100, 0.85), 0 0 18px rgba(163, 230, 53, 0.8);
+      animation: glow 0.4s ease-out;
+      z-index: 5 !important;
+    }
+    @keyframes glow {
+      0% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    /* Puzzle footer */
+    .puzzle-footer {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      top: 330px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    .puzzle-status {
+      font-size: 0.9rem;
+    }
+    .status-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+    .status-value {
+      font-size: 0.96rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(148, 163, 184, 0.5);
+    }
+    .dot.on {
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.9);
+    }
+
+    /* Side panel content */
+    .side-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .side-section {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+    .side-section h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a5b4fc;
+      margin-bottom: 4px;
+    }
+    .side-section p {
+      font-size: 0.86rem;
+      opacity: 0.9;
+    }
+    .side-ukusa {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .flag {
+      font-size: 1.1rem;
+    }
+
+    .side-footer {
+      margin-top: auto;
+      font-size: 0.76rem;
+      opacity: 0.8;
+      text-align: center;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.6);
+    }
+
+    /* Rube Goldberg & Santa animation overlay */
+    #animationOverlay {
+      position: absolute;
+      inset: 12px 14px 12px 14px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, #111827, #020617 60%, #000 100%);
+      z-index: 200;
+      overflow: hidden;
+      display: none;
+    }
+
+    /* Simple RG machine visuals */
+    .rg-stage {
+      position: absolute;
+      inset: 16px 18px 70px 18px;
+    }
+    .rg-element {
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0;
+    }
+    .rg-snowball {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #f9fafb, #d1d5db);
+      box-shadow: 0 0 16px rgba(248, 250, 252, 0.9);
+    }
+    .rg-domino {
+      width: 10px;
+      height: 26px;
+      border-radius: 4px;
+      background: #f97316;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+      transform-origin: bottom center;
+    }
+    .rg-bell {
+      width: 26px;
+      height: 26px;
+      border-radius: 50% 50% 45% 45%;
+      background: radial-gradient(circle at 30% 10%, #facc15, #b45309);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+    }
+    .rg-tree {
+      width: 0;
+      height: 0;
+      border-left: 26px solid transparent;
+      border-right: 26px solid transparent;
+      border-bottom: 42px solid #16a34a;
+      filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.7));
+    }
+    .rg-gift {
+      width: 28px;
+      height: 24px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #b91c1c, #fecaca);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+    .rg-gift::before,
+    .rg-gift::after {
+      content: "";
+      position: absolute;
+      background: #facc15;
+    }
+    .rg-gift::before {
+      width: 4px;
+      height: 100%;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+    }
+    .rg-gift::after {
+      height: 4px;
+      width: 100%;
+      top: 40%;
+      left: 0;
+    }
+
+    .rg-path {
+      position: absolute;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.6), rgba(248, 250, 252, 0.9));
+      opacity: 0.6;
+    }
+
+    /* Santa sleigh */
+    .santa-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 16px;
+      height: 80px;
+      overflow: visible;
+    }
+    .santa-sleigh {
+      position: absolute;
+      top: 10px;
+      left: -220px;
+      width: 200px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .reindeer {
+      width: 28px;
+      height: 28px;
+      border-radius: 50% 50% 40% 40%;
+      background: radial-gradient(circle at 30% 20%, #f97316, #92400e);
+      position: relative;
+      box-shadow: 0 0 8px rgba(248, 250, 252, 0.7);
+    }
+    .reindeer::before,
+    .reindeer::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 10px;
+      border-radius: 999px;
+      border: 2px solid #f9fafb;
+      border-bottom: none;
+      top: -8px;
+    }
+    .reindeer::before { left: 2px; }
+    .reindeer::after { right: 2px; }
+
+    .rudolph-nose {
+      position: absolute;
+      right: -4px;
+      bottom: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 1);
+      animation: rudolphGlow 1s ease-in-out infinite;
+    }
+    @keyframes rudolphGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(248, 113, 113, 1); }
+      50% { box-shadow: 0 0 20px rgba(248, 113, 113, 1), 0 0 30px rgba(248, 113, 113, 0.7); }
+    }
+
+    .sleigh-body {
+      width: 70px;
+      height: 32px;
+      border-radius: 12px 12px 0 16px;
+      background: linear-gradient(135deg, #991b1b, #fecaca);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+    .sleigh-body::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: -6px;
+      height: 5px;
+      border-radius: 999px;
+      border: 2px solid #facc15;
+      border-top: none;
+    }
+    .santa-head {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fecaca;
+      top: -10px;
+      left: 10px;
+      box-shadow: 0 0 8px rgba(248, 250, 252, 0.9);
+    }
+    .santa-hat {
+      position: absolute;
+      left: 7px;
+      top: -8px;
+      width: 16px;
+      height: 12px;
+      border-radius: 50% 50% 0 0;
+      background: #b91c1c;
+      border-bottom: 3px solid #f9fafb;
+    }
+    .santa-hat::after {
+      content: "";
+      position: absolute;
+      right: -3px;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f9fafb;
+    }
+
+    .banner {
+      position: absolute;
+      left: 80px;
+      top: 10px;
+      min-width: 260px;
+      height: 40px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1f2937, #0f172a);
+      border: 1px solid rgba(248, 250, 252, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0 16px rgba(248, 250, 252, 0.7);
+    }
+    .banner-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      text-align: center;
+      background: conic-gradient(
+        from 0deg,
+        #fde68a,
+        #f97316,
+        #fb7185,
+        #a855f7,
+        #22c55e,
+        #38bdf8,
+        #fde68a
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rainbowText 4s linear infinite;
+      padding: 0 8px;
+    }
+    @keyframes rainbowText {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* RG text */
+    .rg-caption {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.85rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      text-align: center;
+    }
+
+    /* Helper stars/snow */
+    .star-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: rgba(248, 250, 252, 0.9);
+      opacity: 0.2;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.4); }
+    }
+
+    @media (max-width: 600px) {
+      .landing-card {
+        padding: 20px 16px;
+      }
+      .landing-greeting { font-size: 1.6rem; }
+      .landing-sub { font-size: 0.76rem; }
+      .landing-message { font-size: 0.92rem; }
+      .app-title { font-size: 1.1rem; }
+      .app-subtitle { font-size: 0.75rem; }
+      .puzzle-piece {
+        width: 70px;
+        height: 60px;
+        font-size: 0.7rem;
+      }
+      .piece-emoji {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <div class="app-title">Christmas Cat Puzzle</div>
+        <div class="app-subtitle">A Little Gift of Joy &amp; Faith</div>
+      </div>
+      <div class="top-bar-right">
+        <button id="showInstructionsBtn" class="btn-ghost">Instructions</button>
+        <div id="soundToggle" class="sound-toggle">
+          <span id="soundIndicator" class="sound-indicator on"></span>
+          <span>Sound: <strong id="soundLabel">On</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <!-- Puzzle panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Puzzle Scene</div>
+            <div class="panel-subtitle">Drag each festive cat piece into place</div>
+          </div>
+          <button id="resetPuzzleBtn" class="btn-ghost" style="font-size: 0.78rem;">Reset</button>
+        </div>
+
+        <div id="puzzleCanvas">
+          <div class="puzzle-board">
+            <div class="puzzle-grid" id="puzzleGrid">
+              <!-- 12 slots -->
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+              <div class="puzzle-slot"></div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="puzzle-footer">
+            <div class="puzzle-status">
+              <div class="status-label">Progress</div>
+              <div class="status-value">
+                <span id="piecesPlaced">0</span> / <span id="totalPieces">12</span> pieces
+              </div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+            <div class="puzzle-status">
+              <div class="status-label">Next Step</div>
+              <div class="status-value" id="statusNext">
+                Complete the puzzle to start the Christmas magic!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animation overlay (Rube Goldberg + Santa) -->
+        <div id="animationOverlay">
+          <div class="rg-stage" id="rgStage">
+            <div class="rg-caption">A little Christmas chain reaction just for you…</div>
+          </div>
+          <div class="santa-track">
+            <div class="santa-sleigh" id="santaSleigh">
+              <div class="reindeer">
+                <div class="rudolph-nose"></div>
+              </div>
+              <div class="reindeer"></div>
+              <div class="reindeer"></div>
+              <div class="sleigh-body">
+                <div class="santa-head"></div>
+                <div class="santa-hat"></div>
+              </div>
+              <div class="banner">
+                <div class="banner-text" id="bannerText">
+                  Jesus is the reason for the Season!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">For Gretchen</div>
+            <div class="panel-subtitle">A sister of my heart across the sea</div>
+          </div>
+        </div>
+        <div class="side-inner">
+          <div class="side-section">
+            <h4>About this little gift</h4>
+            <p>
+              This puzzle was made especially for you, Gretchen — a Christmas scene,
+              a few mischievous cats, and a reminder of the One who holds us both.
+              When all the pieces find their place, sit back and enjoy a tiny
+              Rube Goldberg–style Christmas chain reaction just for you.
+            </p>
+          </div>
+          <div class="side-section">
+            <h4>How to play</h4>
+            <p>
+              Drag each festive cat piece into the puzzle area. When a piece is
+              close to its correct position, it will snap into place with a click.
+              Once every piece is snugly in, the Christmas machine will begin.
+            </p>
+          </div>
+          <div class="side-ukusa">
+            <span class="flag">🇺🇸</span>
+            <span>From a heart in America…</span>
+            <span class="flag">🇬🇧</span>
+            <span>…to a heart in Britain. Distance is nothing to God's love.</span>
+          </div>
+          <div class="side-footer">
+            Jesus is the reason for the Season — and you are a gift in this season of my life.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Landing screen -->
+    <div id="landingScreen">
+      <div class="landing-card">
+        <div class="landing-greeting">Merry Christmas, Gretchen!</div>
+        <div class="landing-sub">sister of my heart</div>
+        <div class="landing-message">
+          I love you bunches, sister of my heart. 💖<br />
+          Many blessings and thank you for being you — for your kindness, your
+          generosity, and the way you have cared for me when life has been so hard.
+          This little puzzle is my way of sending you a hug across the ocean and
+          celebrating the One who holds us together.<br /><br />
+          <strong>Jesus is the reason for the Season… and you are one of the sweetest gifts in mine.</strong>
+        </div>
+        <div class="landing-footer-note">
+          When you're ready, press Play to begin your Christmas cat puzzle. Finish it to
+          see a special two-minute Christmas chain reaction and greeting.
+        </div>
+        <div class="landing-actions">
+          <button id="startGameBtn" class="btn-primary">Play the Christmas Puzzle</button>
+          <button id="landingInstructionsBtn" class="btn-ghost">How it works</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions modal -->
+    <div id="instructionsModal" class="hidden">
+      <div class="instructions-card">
+        <div class="instructions-title">How to Play</div>
+        <div class="instructions-subtitle">Christmas Cat Puzzle &amp; Surprise</div>
+        <ul class="instructions-list">
+          <li><strong>1. Start:</strong> From the opening screen, click <em>"Play the Christmas Puzzle"</em>.</li>
+          <li><strong>2. Drag pieces:</strong> Tap and hold each colorful cat piece, then drag it into the puzzle board (the darker rectangle at the top).</li>
+          <li><strong>3. Snap into place:</strong> When a piece is close enough to where it belongs, it will gently snap into place and give a soft "click" sound.</li>
+          <li><strong>4. Track progress:</strong> Watch the progress dots at the bottom to see how many pieces are correctly placed.</li>
+          <li><strong>5. Enjoy the show:</strong> Once all the pieces are in place, a Christmas Rube Goldberg–style chain reaction will start and run for about two minutes.</li>
+          <li><strong>6. Final surprise:</strong> At the end, Santa's sleigh with Rudolph and his bright red nose will glide across the screen, pulling a glowing banner that says:<br />
+            <em>"Jesus is the reason for the Season!"</em>
+          </li>
+          <li><strong>7. Sound:</strong> Use the <em>Sound</em> toggle at the top right to turn the puzzle sounds on or off.</li>
+          <li><strong>8. Reset:</strong> If you'd like to start again, tap the <em>Reset</em> button.</li>
+        </ul>
+        <div class="instructions-note">
+          Tip: Take your time and enjoy the cozy Christmas atmosphere — this gift was made with love just for you.
+        </div>
+        <div class="instructions-close">
+          <button id="closeInstructionsBtn" class="btn-primary">Got it, let's play</button>
+          <button id="closeInstructionsSecondaryBtn" class="btn-ghost">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Star field background in the app -->
+    <div class="star-field" id="starField"></div>
+  </div>
+
+  <script>
+    // Basic state
+    const totalPieces = 12;
+    const pieceData = [
+      { id: 0, emoji: "😺", text: "Curious kitty", gridX: 0, gridY: 0 },
+      { id: 1, emoji: "🎄", text: "Tree helper", gridX: 1, gridY: 0 },
+      { id: 2, emoji: "🎁", text: "Gift guardian", gridX: 2, gridY: 0 },
+      { id: 3, emoji: "⭐", text: "Star gazer", gridX: 3, gridY: 0 },
+      { id: 4, emoji: "🕯️", text: "Candlelight", gridX: 0, gridY: 1 },
+      { id: 5, emoji: "❄️", text: "Snowflake", gridX: 1, gridY: 1 },
+      { id: 6, emoji: "🧦", text: "Stocking", gridX: 2, gridY: 1 },
+      { id: 7, emoji: "🍪", text: "Cookie", gridX: 3, gridY: 1 },
+      { id: 8, emoji: "🔔", text: "Jingle bell", gridX: 0, gridY: 2 },
+      { id: 9, emoji: "🌟", text: "Hope", gridX: 1, gridY: 2 },
+      { id: 10, emoji: "❤️", text: "Love", gridX: 2, gridY: 2 },
+      { id: 11, emoji: "✝️", text: "Jesus", gridX: 3, gridY: 2 },
+    ];
+
+    let placedCount = 0;
+    let soundOn = true;
+    let puzzleComplete = false;
+    let animationRunning = false;
+
+    const landingScreen = document.getElementById("landingScreen");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const landingInstructionsBtn = document.getElementById("landingInstructionsBtn");
+    const instructionsModal = document.getElementById("instructionsModal");
+    const showInstructionsBtn = document.getElementById("showInstructionsBtn");
+    const closeInstructionsBtn = document.getElementById("closeInstructionsBtn");
+    const closeInstructionsSecondaryBtn = document.getElementById("closeInstructionsSecondaryBtn");
+    const soundToggle = document.getElementById("soundToggle");
+    const soundIndicator = document.getElementById("soundIndicator");
+    const soundLabel = document.getElementById("soundLabel");
+    const puzzleCanvas = document.getElementById("puzzleCanvas");
+    const piecesPlacedEl = document.getElementById("piecesPlaced");
+    const totalPiecesEl = document.getElementById("totalPieces");
+    const progressDots = document.getElementById("progressDots");
+    const statusNext = document.getElementById("statusNext");
+    const resetPuzzleBtn = document.getElementById("resetPuzzleBtn");
+    const animationOverlay = document.getElementById("animationOverlay");
+    const rgStage = document.getElementById("rgStage");
+    const santaSleigh = document.getElementById("santaSleigh");
+    const bannerText = document.getElementById("bannerText");
+    const starField = document.getElementById("starField");
+
+    totalPiecesEl.textContent = totalPieces.toString();
+
+    // Create progress dots
+    function initProgressDots() {
+      progressDots.innerHTML = "";
+      for (let i = 0; i < totalPieces; i++) {
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        progressDots.appendChild(dot);
+      }
+    }
+    initProgressDots();
+
+    // Starfield
+    function initStars() {
+      const starCount = 60;
+      for (let i = 0; i < starCount; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.animationDelay = (Math.random() * 3) + "s";
+        starField.appendChild(s);
+      }
+    }
+    initStars();
+
+    // Sounds (simple Web Audio click)
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+    function playSnapSound() {
+      if (!soundOn) return;
+      try {
+        if (!audioCtx) initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.14);
+      } catch (e) {
+        console.log("Audio not available");
+      }
+    }
+
+    // Toggle sound
+    soundToggle.addEventListener("click", () => {
+      soundOn = !soundOn;
+      if (soundOn) {
+        soundIndicator.classList.add("on");
+        soundLabel.textContent = "On";
+      } else {
+        soundIndicator.classList.remove("on");
+        soundLabel.textContent = "Off";
+      }
+    });
+
+    // Instructions open/close
+    const openInstructions = () => {
+      instructionsModal.classList.remove("hidden");
+    };
+    const closeInstructions = () => {
+      instructionsModal.classList.add("hidden");
+    };
+
+    showInstructionsBtn.addEventListener("click", openInstructions);
+    landingInstructionsBtn.addEventListener("click", openInstructions);
+    closeInstructionsBtn.addEventListener("click", closeInstructions);
+    closeInstructionsSecondaryBtn.addEventListener("click", closeInstructions);
+
+    // Landing
+    startGameBtn.addEventListener("click", () => {
+      landingScreen.classList.add("hidden");
+      initAudio();
+      setTimeout(() => {
+        createPieces();
+      }, 100);
+    });
+
+    // Puzzle pieces
+    let pieces = [];
+    let boardRect = null;
+    let gridRect = null;
+
+    function updateRects() {
+      const board = puzzleCanvas.querySelector(".puzzle-board");
+      const grid = puzzleCanvas.querySelector(".puzzle-grid");
+      boardRect = board.getBoundingClientRect();
+      gridRect = grid.getBoundingClientRect();
+    }
+
+    function createPieces() {
+      // remove old pieces
+      pieces.forEach(p => p.el.remove());
+      pieces = [];
+      placedCount = 0;
+      puzzleComplete = false;
+      animationRunning = false;
+      animationOverlay.style.display = "none";
+      piecesPlacedEl.textContent = "0";
+      statusNext.textContent = "Complete the puzzle to start the Christmas magic!";
+      const dots = progressDots.querySelectorAll(".dot");
+      dots.forEach(d => d.classList.remove("on"));
+
+      updateRects();
+
+      const cellWidth = gridRect.width / 4;
+      const cellHeight = gridRect.height / 3;
+
+      // Create pieces in random order and positions
+      const shuffled = [...pieceData].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach((piece, index) => {
+        const el = document.createElement("div");
+        el.className = "puzzle-piece piece-" + piece.id;
+        el.dataset.id = piece.id;
+
+        const content = document.createElement("div");
+        content.className = "piece-content";
+        const emojiSpan = document.createElement("span");
+        emojiSpan.className = "piece-emoji";
+        emojiSpan.textContent = piece.emoji + " 🐾";
+        const textSpan = document.createElement("span");
+        textSpan.textContent = piece.text;
+        content.appendChild(emojiSpan);
+        content.appendChild(textSpan);
+        el.appendChild(content);
+
+        // Position pieces below the board
+        const canvasRect = puzzleCanvas.getBoundingClientRect();
+        const x = 20 + (index % 4) * 90;
+        const y = 340 + Math.floor(index / 4) * 80;
+
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+
+        puzzleCanvas.appendChild(el);
+
+        const logical = {
+          ...piece,
+          el,
+          correctX: gridRect.left - canvasRect.left + piece.gridX * cellWidth + (cellWidth - 80) / 2,
+          correctY: gridRect.top - canvasRect.top + piece.gridY * cellHeight + (cellHeight - 70) / 2,
+          placed: false,
+        };
+
+        pieces.push(logical);
+        enableDragging(logical);
+      });
+    }
+
+    function enableDragging(pieceObj) {
+      const el = pieceObj.el;
+      let offsetX = 0;
+      let offsetY = 0;
+      let dragging = false;
+
+      function onStart(e) {
+        if (pieceObj.placed || animationRunning) return;
+        e.preventDefault();
+        dragging = true;
+        el.classList.add("dragging");
+        
+        const touch = e.touches ? e.touches[0] : e;
+        const rect = el.getBoundingClientRect();
+        const canvasRect = puzzleCanvas.getBoundingClientRect();
+        
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+
+        document.addEventListener("touchmove", onMove, { passive: false });
+        document.addEventListener("touchend", onEnd);
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onEnd);
+      }
+
+      function onMove(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        
+        const touch = e.touches ? e.touches[0] : e;
+        const canvasRect = puzzleCanvas.getBoundingClientRect();
+        
+        let newLeft = touch.clientX - canvasRect.left - offsetX;
+        let newTop = touch.clientY - canvasRect.top - offsetY;
+
+        // keep within puzzle canvas
+        const maxLeft = puzzleCanvas.clientWidth - 80;
+        const maxTop = puzzleCanvas.clientHeight - 70;
+        newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+        newTop = Math.max(0, Math.min(newTop, maxTop));
+
+        el.style.left = newLeft + "px";
+        el.style.top = newTop + "px";
+      }
+
+      function onEnd() {
+        if (!dragging) return;
+        dragging = false;
+        el.classList.remove("dragging");
+        
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onEnd);
+
+        // Check if near correct spot
+        const currentLeft = parseFloat(el.style.left);
+        const currentTop = parseFloat(el.style.top);
+
+        const snapThreshold = 50;
+        const dx = currentLeft - pieceObj.correctX;
+        const dy = currentTop - pieceObj.correctY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < snapThreshold) {
+          // snap
+          el.style.left = pieceObj.correctX + "px";
+          el.style.top = pieceObj.correctY + "px";
+          pieceObj.placed = true;
+          el.classList.add("piece-correct");
+          el.style.cursor = "default";
+          playSnapSound();
+          handlePiecePlaced();
+        }
+      }
+
+      el.addEventListener("touchstart", onStart, { passive: false });
+      el.addEventListener("mousedown", onStart);
+    }
+
+    function handlePiecePlaced() {
+      placedCount++;
+      piecesPlacedEl.textContent = placedCount.toString();
+      const dots = progressDots.querySelectorAll(".dot");
+      if (dots[placedCount - 1]) {
+        dots[placedCount - 1].classList.add("on");
+      }
+      if (placedCount === totalPieces) {
+        puzzleComplete = true;
+        statusNext.textContent = "Puzzle complete! Enjoy the Christmas magic…";
+        setTimeout(() => {
+          startRubeGoldbergAnimation();
+        }, 800);
+      } else {
+        statusNext.textContent = "Keep going — you're doing great!";
+      }
+    }
+
+    // Reset
+    resetPuzzleBtn.addEventListener("click", () => {
+      createPieces();
+    });
+
+    // Rube Goldberg + Santa animation
+    function startRubeGoldbergAnimation() {
+      if (animationRunning) return;
+      animationRunning = true;
+      animationOverlay.style.display = "block";
+      rgStage.innerHTML = '<div class="rg-caption">A little Christmas chain reaction just for you…</div>';
+
+      const totalDuration = 120000;
+      const segment = totalDuration / 8;
+
+      // Create animated elements
+      const snowball = document.createElement("div");
+      snowball.className = "rg-element rg-snowball";
+      snowball.style.left = "24px";
+      snowball.style.top = "30px";
+      rgStage.appendChild(snowball);
+
+      const path1 = document.createElement("div");
+      path1.className = "rg-element rg-path";
+      path1.style.left = "40px";
+      path1.style.top = "46px";
+      path1.style.width = "260px";
+      rgStage.appendChild(path1);
+
+      const dominoes = [];
+      for (let i = 0; i < 10; i++) {
+        const d = document.createElement("div");
+        d.className = "rg-element rg-domino";
+        d.style.left = (70 + i * 18) + "px";
+        d.style.top = "70px";
+        rgStage.appendChild(d);
+        dominoes.push(d);
+      }
+
+      const bell = document.createElement("div");
+      bell.className = "rg-element rg-bell";
+      bell.style.left = "280px";
+      bell.style.top = "90px";
+      rgStage.appendChild(bell);
+
+      const tree = document.createElement("div");
+      tree.className = "rg-element rg-tree";
+      tree.style.left = "120px";
+      tree.style.top = "140px";
+      rgStage.appendChild(tree);
+
+      const gift = document.createElement("div");
+      gift.className = "rg-element rg-gift";
+      gift.style.left = "260px";
+      gift.style.top = "160px";
+      rgStage.appendChild(gift);
+
+      const path2 = document.createElement("div");
+      path2.className = "rg-element rg-path";
+      path2.style.left = "40px";
+      path2.style.top = "210px";
+      path2.style.width = "260px";
+      rgStage.appendChild(path2);
+
+      const ornament = document.createElement("div");
+      ornament.className = "rg-element rg-snowball";
+      ornament.style.left = "40px";
+      ornament.style.top = "200px";
+      ornament.style.background = "radial-gradient(circle at 30% 20%, #fecaca, #b91c1c)";
+      rgStage.appendChild(ornament);
+
+      const cross = document.createElement("div");
+      cross.className = "rg-element";
+      cross.style.width = "6px";
+      cross.style.height = "32px";
+      cross.style.background = "#facc15";
+      cross.style.left = "160px";
+      cross.style.top = "240px";
+      const crossBar = document.createElement("div");
+      crossBar.style.position = "absolute";
+      crossBar.style.width = "18px";
+      crossBar.style.height = "6px";
+      crossBar.style.background = "#facc15";
+      crossBar.style.left = "-6px";
+      crossBar.style.top = "10px";
+      cross.appendChild(crossBar);
+      rgStage.appendChild(cross);
+
+      const heart = document.createElement("div");
+      heart.className = "rg-element";
+      heart.style.width = "24px";
+      heart.style.height = "24px";
+      heart.style.left = "200px";
+      heart.style.top = "242px";
+      heart.style.position = "absolute";
+      heart.style.transform = "rotate(-45deg)";
+      heart.style.background = "#fb7185";
+      heart.style.boxShadow = "0 0 14px rgba(251, 113, 133, 0.8)";
+      const heartBefore = document.createElement("div");
+      const heartAfter = document.createElement("div");
+      [heartBefore, heartAfter].forEach(h => {
+        h.style.content = "";
+        h.style.position = "absolute";
+        h.style.width = "24px";
+        h.style.height = "24px";
+        h.style.borderRadius = "50%";
+        h.style.background = "#fb7185";
+      });
+      heartBefore.style.left = "0";
+      heartBefore.style.top = "-12px";
+      heartAfter.style.top = "0";
+      heartAfter.style.left = "12px";
+      heart.appendChild(heartBefore);
+      heart.appendChild(heartAfter);
+      rgStage.appendChild(heart);
+
+      function fadeIn(el, delay) {
+        setTimeout(() => {
+          el.style.transition = "opacity 1.2s ease-out, transform 1.2s ease-out";
+          el.style.opacity = "1";
+        }, delay);
+      }
+
+      function moveElement(el, from, to, delay, duration) {
+        setTimeout(() => {
+          el.style.opacity = "1";
+          el.style.transition = `transform ${duration}ms ease-in-out`;
+          el.style.transform = `translate(${from.x}px, ${from.y}px)`;
+          requestAnimationFrame(() => {
+            el.style.transform = `translate(${to.x}px, ${to.y}px)`;
+          });
+        }, delay);
+      }
+
+      fadeIn(path1, 100);
+      moveElement(snowball, { x: 0, y: 0 }, { x: 230, y: 14 }, 400, segment * 0.8);
+
+      setTimeout(() => {
+        dominoes.forEach((d, i) => {
+          d.style.opacity = "1";
+          d.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+          setTimeout(() => {
+            d.style.transform = "rotate(70deg)";
+            d.style.opacity = "0.9";
+          }, i * 160);
+        });
+      }, segment * 0.9);
+
+      setTimeout(() => {
+        bell.style.opacity = "1";
+        bell.style.transition = "transform 0.6s ease-in-out";
+        bell.style.transform = "rotate(-12deg)";
+        setTimeout(() => { bell.style.transform = "rotate(8deg)"; }, 300);
+        setTimeout(() => { bell.style.transform = "rotate(0deg)"; }, 600);
+        tree.style.opacity = "1";
+        gift.style.opacity = "1";
+      }, segment * 1.8);
+
+      fadeIn(path2, segment * 2);
+      moveElement(ornament, { x: 0, y: 0 }, { x: 220, y: 4 }, segment * 2.2, segment * 0.9);
+
+      setTimeout(() => {
+        cross.style.opacity = "1";
+        cross.style.transition = "box-shadow 1.2s ease-out, opacity 1.2s ease-out";
+        cross.style.boxShadow = "0 0 20px rgba(250, 204, 21, 1)";
+        heart.style.opacity = "1";
+        heart.style.transition = "transform 1.2s ease-out, box-shadow 1.2s ease-out, opacity 1.2s ease-out";
+        heart.style.transform += " scale(1.1)";
+        heart.style.boxShadow = "0 0 24px rgba(251, 113, 133, 1)";
+      }, segment * 3);
+
+      setTimeout(() => {
+        cross.style.transition = "transform 1s ease-in-out";
+        heart.style.transition = "transform 1s ease-in-out";
+        let toggle = false;
+        const pulseInterval = setInterval(() => {
+          if (!animationRunning) {
+            clearInterval(pulseInterval);
+            return;
+          }
+          toggle = !toggle;
+          const scale = toggle ? 1.05 : 1.0;
+          cross.style.transform = `scale(${scale})`;
+          heart.style.transform = `rotate(-45deg) scale(${scale * 1.1})`;
+        }, 1300);
+      }, segment * 3.8);
+
+      const santaDuration = segment * 2;
+      const screenWidth = window.innerWidth;
+      setTimeout(() => {
+        santaSleigh.style.transition = `transform ${santaDuration}ms linear`;
+        santaSleigh.style.transform = `translateX(${screenWidth + 400}px)`;
+      }, segment * 4.5);
+
+      setTimeout(() => {
+        bannerText.style.opacity = "1";
+      }, segment * 4.5 + 500);
+
+      setTimeout(() => {
+        statusNext.textContent
